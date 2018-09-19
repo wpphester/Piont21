@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>21点-项目案例</title>
+    <link rel="shortcut icon" href="../小图标19.jpg"/>
+    <style>
+        *{
+            padding:0;
+            margin:0;
+        }
+        div{
+            width:400px;
+            height:200px;
+            border-radius: 5px;
+        }
+        body>div{
+            display: none;
+        }
+        i{
+            display: inline-block;
+            height:100%;
+            line-height: 25px;
+            padding-left: 10px;
+        }
+        img{
+            width:60px;
+            height:80px;
+            position: absolute;
+            border:1px solid red;
+        }
+        button{
+            border:1px solid skyblue;
+            border-radius: 5px;
+            background: none;
+            padding: 10px 20px;
+            position: absolute;
+        }
+        div>button{
+            display: none;
+        }
+        #startGame{
+            top:48%;
+            left:45%;
+        }
+        #player1{
+            position: absolute;
+            top:10px;
+            left:35%;
+            border:1px solid purple;
+        }
+        #player2{
+            position: absolute;
+            top:35%;
+            left:10px;
+            border:1px solid red;
+        }
+        #player3{
+            position: absolute;
+            top:35%;
+            right:10px;
+            border:1px solid lime;
+        }
+        #player4{
+            position: absolute;
+            bottom:10px;
+            left:35%;
+            border:1px solid deepskyblue;
+        }
+
+        #player1 .photo,#player2 .photo,#player3 .photo,#player4 .photo{
+            width: 100px;
+            height:180px;
+            border:1px solid red;
+            border-radius: 5px;
+            position: absolute;
+            top:10px;
+            left:10px;
+            background: url("images/photo.jpg") no-repeat;
+            background-size:100% 100%;
+        }
+        .vip{
+            background: url("images/vip.jpg") no-repeat top right !important;
+        }
+        #player1 .info,#player2 .info,#player3 .info,#player4 .info{
+            width:260px;
+            height:25px;
+            border:1px solid red;
+            border-radius: 5px;
+            position: absolute;
+            top:10px;
+            right:10px;
+        }
+        #player1 .cards,#player2 .cards,#player3 .cards,#player4 .cards{
+            width:260px;
+            height:100px;
+            border:1px solid red;
+            border-radius: 5px;
+            position: absolute;
+            top:50px;
+            right:10px;
+        }
+        #player1 .pointInfo,#player2 .pointInfo,#player3 .pointInfo,#player4 .pointInfo{
+            width:260px;
+            height:25px;
+            border:1px solid red;
+            border-radius: 5px;
+            position: absolute;
+            bottom:10px;
+            right:10px;
+        }
+
+        em{
+            width:100%;
+            height:100%;
+            display: inline-block;
+            position: absolute;
+            background-size:100% 100%;
+            opacity: 0.9;
+        }
+        .boom{
+            background: url("images/boom.gif");
+			background-size:100% 100%;
+        }
+        .win{
+            background: url("images/win.gif");
+            font-family: "华文行楷";
+            font-size:60px;
+            color:purple;
+            text-align: center;
+            line-height: 200px;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <button id="startGame" onclick="start()">开始游戏</button>
+    <div id="player1">
+        <div class="photo"></div>
+        <p class="info">
+            <i>昵称：</i><span class="name">落叶归根1</span>
+            <i>总积分：</i><span class="grade">340</span>
+        </p>
+        <div class="cards"></div>
+        <p class="pointInfo"><i>点数为：</i><span class="point">0</span></p>
+        <button style="left: 25%;bottom:-50px;" onclick="yesorno(0,true)">叫牌</button>
+        <button style="left: 55%;bottom:-50px;" onclick="yesorno(0,false)">不叫牌</button>
+    </div>
+    <div id="player2">
+        <div class="photo"></div>
+        <p class="info">
+            <i>昵称：</i><span class="name">落叶归根2</span>
+            <i>总积分：</i><span class="grade">340</span>
+        </p>
+        <div class="cards"></div>
+        <p class="pointInfo"><i>点数为：</i><span class="point">0</span></p>
+        <button style="right: -25%;top:40%;" onclick="yesorno(1,true)">叫牌</button>
+        <button style="right: -55%;top:40%;" onclick="yesorno(1,false)">不叫牌</button>
+    </div>
+    <div id="player3">
+        <div class="photo"></div>
+        <p class="info">
+            <i>昵称：</i><span class="name">落叶归根3</span>
+            <i>总积分：</i><span class="grade">340</span>
+        </p>
+        <div class="cards"></div>
+        <p class="pointInfo"><i>点数为：</i><span class="point">0</span></p>
+        <button style="left: -25%;top:40%;" onclick="yesorno(2,true)">叫牌</button>
+        <button style="left: -55%;top:40%;" onclick="yesorno(2,false)">不叫牌</button>
+    </div>
+    <div id="player4">
+        <div class="photo"></div>
+        <p class="info">
+            <i>昵称：</i><span class="name">落叶归根4</span>
+            <i>总积分：</i><span class="grade">340</span>
+        </p>
+        <div class="cards"></div>
+        <p class="pointInfo"><i>点数为：</i><span class="point">0</span></p>
+        <button style="left: 25%;top:-50px;" onclick="yesorno(3,true)">叫牌</button>
+        <button style="left: 55%;top:-50px;" onclick="yesorno(3,false)">不叫牌</button>
+    </div>
+
+    <script>
+        //产生牌
+        var cards=[];
+        for(var i=0;i<52;i++){
+            cards[i]=i;
+        }
+        //洗牌 打乱顺序
+        cards.sort(function () {
+            return 0.5-Math.random();
+        });
+        var index=0;   //用来记录发牌发到第几张了
+        var zid=-1;
+
+        //获取所有的玩家
+        var divs=document.querySelectorAll("body>div");
+
+        //开始游戏的点击事件
+        document.getElementById("startGame").onclick=function () {
+            //自己隐藏
+            this.style.display="none";
+            //循环，每个玩家都显示出来
+            for(var i=0;i<divs.length;i++){
+                divs[i].style.display="block";
+                divs[i].cas=[];    //手牌
+                divs[i].point=0;    //记录点数
+                divs[i].flag=true;  //是否能够叫牌
+                divs[i].win=false;   //输赢
+            }
+
+            //随机出庄
+            var z=Math.floor( Math.random()*4 );
+            zid=z;
+            //player 1 -> vip
+            divs[z].className+="vip";
+
+            //首先，每个人发两张牌
+            for(var i=0;i<divs.length;i++){
+                for(var j=0;j<2;j++){
+                    getCards( divs[i] );
+                }
+            }
+            showorhide(z,"block");
+        }
+        function showorhide(num,sty) {
+            if( divs[num].flag ){
+                divs[num].getElementsByTagName("button")[0].style.display=sty;
+                divs[num].getElementsByTagName("button")[1].style.display=sty;
+            }else{
+                num++;
+                if(num>=4){
+                    num=0;
+                }
+                showorhide(num,"block");
+            }
+        }
+        function yesorno(num,flag) {
+            showorhide(num,"none");
+            if(flag){
+                getCards( divs[num] );
+            }else{
+                divs[num].flag=false;
+                var gameover=isGameover();
+                if(gameover){
+                    over();
+                    return;
+                }
+            }
+            num++;
+            if(num>=4){
+                num=0;
+            }
+            showorhide(num,"block");
+        }
+
+        //发牌
+        function getCards(player) {
+            //获取一个随机数字，经过转换，变成一个扑克牌的数值
+            var val=cards[index];
+            index++;
+            //先把这个牌，放入到手牌
+            player.cas.push(val);
+            //并且，把这个扑克牌添加到合适的位置
+            var imgs=player.getElementsByClassName("cards")[0];
+            imgs.innerHTML+="<img src='images/"+val+".jpg'  style='left:"+(10+(player.cas.length-1)*20)+"px;top:10px'/>";
+
+            //计算点数
+            var pointNum=val%13;
+            //区分数字牌和花色牌
+            if(pointNum>=10){
+                pointNum=1;
+            }else{
+                pointNum=pointNum+1;
+            }
+            player.point+=pointNum;
+            //还要显示到网页上去
+            var pointInfo=player.getElementsByClassName("point")[0];
+            pointInfo.innerHTML=player.point;
+
+            //判断有没有爆掉
+            if(player.point>=22){
+                player.flag=false;
+                //添加爆掉的图片
+                var img=document.createElement("em");
+                img.className="boom";
+                player.appendChild(img);
+                var gameover=isGameover();
+                if(gameover){
+                    over();
+                    return;
+                }
+            }
+        }
+
+        function isGameover() {
+            var count=0;
+            for(var i=0;i<divs.length;i++){
+                if( divs[i].flag ){
+                    count++;
+                }
+            }
+            if(count<=1){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+        function over() {
+            var zpoint=divs[zid].point;
+            for(var i=0;i<divs.length;i++){
+                if( zid !=i ){
+                    if(zpoint>21){
+                        divs[zid].win=false;
+                        if(divs[i].point<=21){
+                            divs[i].win=true;
+                        }else{
+                            divs[i].win=false;
+                        }
+                    }else{
+                        if( divs[i].point>21 || divs[i].point<=zpoint ){
+                            divs[i].win=false;
+                            divs[zid].win=true;
+                        }else{
+                            divs[i].win=true;
+                            divs[zid].win=false;
+                        }
+                    }
+                }
+            }
+            for(var i=0;i<divs.length;i++){
+                if(divs[i].win){
+                    var img=document.createElement("em");
+                    img.className="win";
+                    img.innerHTML="赢了";
+                    divs[i].appendChild(img);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
